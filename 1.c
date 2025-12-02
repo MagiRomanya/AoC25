@@ -2,20 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utilities.h"
+
 #define MAX_DIGITS 4
 
-char* readEntireFile(char* path) {
-    FILE *file = fopen("data/1.dat", "r");
-    // Get file size
-    fseek(file, 0, SEEK_END);
-    int fsize = ftell(file);
-    rewind(file);
-    // Get file content to memory
-    char *fileContents = malloc(fsize + 1);
-    fread(fileContents, fsize, sizeof(char), file);
-    fclose(file);
-    return fileContents;
-}
 
 int main() {
     char* instructions = readEntireFile("data/1.dat");
