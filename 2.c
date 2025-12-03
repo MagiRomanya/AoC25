@@ -7,7 +7,7 @@
 
 #define MAX_DIGITS 20
 
-int checkValidId(long id) {
+int checkValidIdPart1(long id) {
     char idString[MAX_DIGITS];
     const int nDigits = (int)(ceil(log10(id))+1);
     sprintf(idString, "%li", id);
@@ -22,6 +22,31 @@ int checkValidId(long id) {
     return 0;
 }
 
+int checkValidIdPart2(long id) {
+    char idString[MAX_DIGITS] = {0};
+    const int nDigits = ceil(log10(id));
+    sprintf(idString, "%li", id);
+    int halfNDigits = nDigits/2;
+    for (int size = 1; size <= halfNDigits; ++size) {
+        if (nDigits % size != 0) continue;
+        int isSequence = 1;
+        char sequence[MAX_DIGITS] = {0};
+        memcpy(sequence, idString, size);
+        for (int j = 0; j < nDigits - (size - 1); j+=size) {
+            char blockJ[MAX_DIGITS] = {0};
+            memcpy(blockJ, &(idString[j]), size);
+            if (strcmp(sequence, blockJ) != 0) {
+                isSequence = 0;
+                break;
+            }
+        }
+        if (isSequence) return 0;
+    }
+
+    return 1;
+}
+
+
 int main()
 {
     // HACK Comma terminated
@@ -29,8 +54,11 @@ int main()
 
     // TESTING
     // char* idRanges = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124,";
+    // char* idRanges = "2121212118-2121212124,";
+
     int rPtr = 0;
-    long total = 0; // sum of the value of the invalid ids
+    long totalPart1 = 0; // sum of the value of the invalid ids
+    long totalPart2 = 0; 
     while (idRanges[rPtr] != '\0' && idRanges[rPtr] != '\n') {
         char* idRange = &(idRanges[rPtr]);
         int cPtr = 0; // comma ptr
@@ -55,19 +83,22 @@ int main()
 
         long numLow = atol(digitsLow);
         long numHigh = atol(digitsHigh);
-        printf("%li - %li\n", numLow, numHigh);
 
         long id = numLow;
         for (; id <= numHigh; id++) {
-            int valid = checkValidId(id);
-            if (!valid) {
-                total += id;
-                printf("id = %li not valid\n", id);
+            int valid1 = checkValidIdPart1(id);
+            int valid2 = checkValidIdPart2(id);
+            if (!valid1) {
+                totalPart1 += id;
+            }
+            if (!valid2) {
+                totalPart2 += id;
             }
         }
 
         rPtr += cPtr;
     }
-    printf("Adding up all the invalid IDs produces %li.\n", total);
+    printf("(Part 1) Adding up all the invalid IDs produces %li.\n", totalPart1);
+    printf("(Part 2) Adding up all the invalid IDs produces %li.\n", totalPart2);
     return 0;
 }
