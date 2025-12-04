@@ -15,7 +15,8 @@ int main() {
 
     // The dial starts by pointing at 50.
     int state = 50;
-    int zeroCounter = 0;
+    int zeroCounterPart1 = 0;
+    int zeroCounterPart2 = 0;
     while (instructions[iPtr] != '\0') {
         int nlPtr = 0;
         while (instructions[iPtr + (nlPtr++)] != '\n') {}
@@ -24,6 +25,7 @@ int main() {
         memcpy(digits, &(instructions[iPtr+1]), nDigits);
         int num = atoi(digits);
 
+        int state0 = state;
         switch (instructions[iPtr]) {
             case 'L': {
                 state -= num;
@@ -34,16 +36,37 @@ int main() {
                 break;
             }
             printf("UNREACHABLE\n");
+            return 1;
+        }
+
+        if (state <= 0 || state >= 100) {
+            if (state > 0) { // positive
+                zeroCounterPart2 += state / 100;
+            }
+            else if (state == 0) {
+                zeroCounterPart2++;
+            }
+            else { // negative
+                // Count how many -100s we passed
+                int zeros = abs(state) / 100; 
+        
+                // If we started at >0, then we crossed an extra time
+                if (state0 > 0) zeros++;
+
+                zeroCounterPart2 += zeros;
+            }
         }
 
         state = state % 100;
         if (state < 0) {
             state = 100 + state;
         }
+
         if (state == 0) {
-            zeroCounter++;
+            zeroCounterPart1++;
         }
         iPtr += nlPtr;
     }
-    printf("Password = %i\n", zeroCounter);
+    printf("(Part1) Password = %i\n", zeroCounterPart1);
+    printf("(Part2) Password = %i\n", zeroCounterPart2);
 }
