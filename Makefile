@@ -4,7 +4,7 @@
 # @file
 # @version 0.1
 
-all: day1 day2 day3 day4
+all: day1 day2 day3 day4 day5
 
 day1: 1.c
 	cc 1.c -o 1.out
@@ -17,5 +17,8 @@ day3: 3.c
 
 day4: 4.c
 	cc 4.c -o 4.out
+
+day5: 5.c
+	cc 5.c -o 5.out
 
 # end
